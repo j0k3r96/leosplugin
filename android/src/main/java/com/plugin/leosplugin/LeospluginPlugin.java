@@ -122,7 +122,9 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
         int[] inputShape = inputShape(args);
         int[] outputShape = outputShape(args);
         Object input, output;
-
+        if (inputShape == null) {
+            return new byte[]{0};
+        }
         System.out.println("1");
         input = getInput6d(doubles, args, inputShape);
         System.out.println("2");
