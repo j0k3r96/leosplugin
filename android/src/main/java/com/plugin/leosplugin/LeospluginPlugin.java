@@ -119,10 +119,11 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
     private byte[] run(HashMap args) {
         double[] doubles = (double[]) args.get("floats");
         byte[] result;
+        int[] inputShape = inputShape(args);
+        int[] outputShape = outputShape(args);
         Object input, output;
-        System.out.println("1");
-        input = getInput6d(doubles, args, new int[]{256,256,6});
-        System.out.println("2");
+
+        input = getInput6d(doubles, args, inputShape);
 
         //if (inputShape.length == 1) {
         //    input = getInput1d(doubles, args, inputShape);
@@ -133,26 +134,23 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
         //} else {
         //    input = getInput4d(doubles, args, inputShape);
         //}
-        System.out.println("3");
-
-        //if (outputShape.length == 1) {
-        //    output = new float[outputShape[0]];
-        //    models.get(args.get("name").toString()).run(input, output);
-        //    result = outputToByteArray1d(output, outputShape);
-        //} else if (outputShape.length == 2) {
-        //    output = new float[outputShape[0]][outputShape[1]];
-        //    models.get(args.get("name").toString()).run(input, output);
-        //    result = outputToByteArray2d(output, outputShape);
-        //} else if (outputShape.length == 3) {
-            output = new float[256][256][3];
+        if (outputShape.length == 1) {
+            output = new float[outputShape[0]];
             models.get(args.get("name").toString()).run(input, output);
-            result = outputToByteArray3d(output, new int[] {256,256,3});
-       // } else {
-       //     output = new float[outputShape[0]][outputShape[1]][outputShape[2]][outputShape[3]];
-       //     models.get(args.get("name").toString()).run(input, output);
-       //     result = outputToByteArray4d(output, outputShape);
-       // }
-        System.out.println("4");
+            result = outputToByteArray1d(output, outputShape);
+        } else if (outputShape.length == 2) {
+            output = new float[outputShape[0]][outputShape[1]];
+            models.get(args.get("name").toString()).run(input, output);
+            result = outputToByteArray2d(output, outputShape);
+        } else if (outputShape.length == 3) {
+            output = new float[outputShape[0]][outputShape[1]][outputShape[2]];
+            models.get(args.get("name").toString()).run(input, output);
+            result = outputToByteArray3d(output, outputShape);
+        } else {
+            output = new float[outputShape[0]][outputShape[1]][outputShape[2]][outputShape[3]];
+            models.get(args.get("name").toString()).run(input, output);
+            result = outputToByteArray4d(output, outputShape);
+        }
 
         return result;
     }
