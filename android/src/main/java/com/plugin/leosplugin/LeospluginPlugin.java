@@ -122,15 +122,18 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
         int[] inputShape = inputShape(args);
         int[] outputShape = outputShape(args);
         Object input, output;
-        if (inputShape.length == 1) {
-            input = getInput1d(doubles, args, inputShape);
-        } else if (inputShape.length == 2) {
-            input = getInput2d(doubles, args, inputShape);
-        } else if (inputShape.length == 3) {
-            input = getInput3d(doubles, args, inputShape);
-        } else {
-            input = getInput4d(doubles, args, inputShape);
-        }
+
+        input = getInput6d(doubles, args, inputShape);
+
+        //if (inputShape.length == 1) {
+        //    input = getInput1d(doubles, args, inputShape);
+        //} else if (inputShape.length == 2) {
+        //    input = getInput2d(doubles, args, inputShape);
+        //} else if (inputShape.length == 3) {
+        //    input = getInput3d(doubles, args, inputShape);
+        //} else {
+        //    input = getInput4d(doubles, args, inputShape);
+        //}
         if (outputShape.length == 1) {
             output = new float[outputShape[0]];
             models.get(args.get("name").toString()).run(input, output);
@@ -215,6 +218,41 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
             for (int x = 0; x < shape[1]; x++) {
                 for (int c = 0; c < shape[2]; c++) {
                     result[y][x][c] = (float) doubles[idx++];
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Wandelt ein Double-Array dieses Formates:
+     * [x,y,Farbe]
+     * [0,0,r],[0,0,g],[0,0,b],[1,0,r],....
+     * in ein Float-Array um,
+     * welches als Input für den Tensor benutzt werden kann.
+     * Format: [1][x][y][rgbrgb]
+     *
+     * @param doubles Image als double Werte
+     * @return input für den Tensor
+     */
+    private float[][][] getInput6d(double[] doubles, HashMap args, int[] shape) {
+        int length = 1;
+        for (int s : shape) {
+            length *= s;
+        }
+
+        if (length != doubles.length) {
+            return null;
+        }
+        float[][][] result = new float[shape[0]][shape[1]][shape[2]];
+        int idx = 0;
+        int shapediv2 = shape[2] / 2;
+        for (int y = 0; y < shape[0]; y++) {
+            for (int x = 0; x < shape[1]; x++) {
+                for(int c = 0; c < 3; c++) {
+                    result[y][x][c] = (float) doubles[idx];
+                    result[y][x][c + 3] = (float) doubles[shapediv2 + idx++];
                 }
             }
         }

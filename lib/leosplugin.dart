@@ -26,8 +26,6 @@ class Leosplugin {
     );
   }
 
-  ///Die Float64List muss eine länge von 256 * 256 * 3 = 196.608 haben!
-  ///Das sind die Maße eines Input - Bildes.
   ///Als Output gibt es das Bild nach der Prediction
   static Future<Uint8List> run({
     @required String name,
