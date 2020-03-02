@@ -123,7 +123,9 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
         int[] outputShape = outputShape(args);
         Object input, output;
 
+        System.out.println("1");
         input = getInput6d(doubles, args, inputShape);
+        System.out.println("2");
 
         //if (inputShape.length == 1) {
         //    input = getInput1d(doubles, args, inputShape);
@@ -134,6 +136,8 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
         //} else {
         //    input = getInput4d(doubles, args, inputShape);
         //}
+        System.out.println("3");
+
         if (outputShape.length == 1) {
             output = new float[outputShape[0]];
             models.get(args.get("name").toString()).run(input, output);
@@ -151,6 +155,7 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
             models.get(args.get("name").toString()).run(input, output);
             result = outputToByteArray4d(output, outputShape);
         }
+        System.out.println("4");
 
         return result;
     }
