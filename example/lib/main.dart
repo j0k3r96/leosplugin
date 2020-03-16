@@ -137,6 +137,29 @@ class _MyAppState extends State<MyApp> {
   }
 
 
+  Future<img.Image> predict(img.Image im1, img.Image im2) async {
+    if (im2 == null) {
+      return im1;
+    }
+    List<int> x = new List<int>();
+    x.addAll(im1.getBytes(format: img.Format.rgb));
+    x.addAll(im2.getBytes(format: img.Format.rgb));
+    var bytes = Uint8List.fromList(x);
+    Float64List floats = Float64List.fromList(bytes.map((x) => x/255).toList());
+    print(floats.length);
+    print(floats);
+    Uint8List output = await Leosplugin.run(name: "model", floats: floats);
+    img.Image result = img.Image.fromBytes(im1.width, im1.height, output,
+        format: img.Format.rgb);
+
+    setState(() {
+      _beforePred = im1.getBytes();
+      _prediction = result.getBytes();
+    });
+    return result;
+  }
+
+
 
 
 
@@ -194,7 +217,11 @@ class _MyAppState extends State<MyApp> {
                 ),
                 FlatButton(
                   child: Text("Predict", style: TextStyle(color: Colors.amber)),
-                  onPressed: () {run();},
+                  onPressed: () async {
+                    var bytes_source_pic = (await rootBundle.load(_IMAGE_PATH)).buffer;
+                    img.Image source_pic = img.decodePng(bytes_source_pic.asUint8List());
+                    img.Image resizedImage = img.copyResize(source_pic, width: _IMAGE_SIZE, height: _IMAGE_SIZE);
+                    predict(resizedImage, resizedImage);},
                 )
               ],
             ),

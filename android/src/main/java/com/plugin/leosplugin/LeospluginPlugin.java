@@ -243,7 +243,7 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
      * @param doubles Image als double Werte
      * @return input für den Tensor
      */
-    private float[][][] getInput6d(double[] doubles, HashMap args, int[] shape) {
+    private float[][][][] getInput6d(double[] doubles, HashMap args, int[] shape) {
         int length = 1;
         for (int s : shape) {
             length *= s;
@@ -252,14 +252,16 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
         if (length != doubles.length) {
             return null;
         }
-        float[][][] result = new float[shape[0]][shape[1]][shape[2]];
+        float[][][][] result = new float[shape[0]][shape[1]][shape[2]][shape[3]];
         int idx = 0;
-        int shapediv2 = shape[2] / 2;
+        int shapediv2 = shape[3] / 2;
         for (int y = 0; y < shape[0]; y++) {
             for (int x = 0; x < shape[1]; x++) {
+            for (int z = 0; z < shape[2]; z++) {
                 for(int c = 0; c < 3; c++) {
-                    result[y][x][c] = (float) doubles[idx];
-                    result[y][x][c + 3] = (float) doubles[shapediv2 + idx++];
+                    result[y][x][z][c] = (float) doubles[idx];
+                    result[y][x][z][c + 3] = (float) doubles[shapediv2 + idx++];
+                }
                 }
             }
         }
