@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> {
 
 
     Uint8List result;
-      result = await Leosplugin.run(name: "model", floats: input);
+      result = Uint8List.fromList( await Leosplugin.run(name: "model", floats: input));
 
     Uint8List image = addAlphaToImage(result, 255);
 
@@ -148,7 +148,7 @@ class _MyAppState extends State<MyApp> {
     Float64List floats = Float64List.fromList(bytes.map((x) => x/255).toList());
     print(floats.length);
     print(floats);
-    Uint8List output = await Leosplugin.run(name: "model", floats: floats);
+    Uint8List output = Uint8List.fromList(await Leosplugin.run(name: "model", floats: floats));
     img.Image result = img.Image.fromBytes(im1.width, im1.height, output,
         format: img.Format.rgb);
 

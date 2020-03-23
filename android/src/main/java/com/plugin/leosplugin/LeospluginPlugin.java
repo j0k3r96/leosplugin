@@ -116,48 +116,18 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
      * @param args Übergebene Argumente der Dart-API
      * @return Output des Tensors im richtigen Format
      */
-    private byte[] run(HashMap args) {
+    private int[] run(HashMap args) {
         double[] doubles = (double[]) args.get("floats");
-        byte[] result;
+        int[] result;
         int[] inputShape = inputShape(args);
         int[] outputShape = outputShape(args);
         Object input, output;
-
-        if (inputShape == null && outputShape == null) {
-            return new byte[]{0,1};
-        }
-
-        if (inputShape == null) {
-            return new byte [] {0};
-        }
         input = getInput6d(doubles, args, inputShape);
 
-        //if (inputShape.length == 1) {
-        //    input = getInput1d(doubles, args, inputShape);
-        //} else if (inputShape.length == 2) {
-        //    input = getInput2d(doubles, args, inputShape);
-        //} else if (inputShape.length == 3) {
-        //    input = getInput3d(doubles, args, inputShape);
-        //} else {
-        //    input = getInput4d(doubles, args, inputShape);
-        //}
-        if (outputShape.length == 1) {
-            output = new float[outputShape[0]];
-            models.get(args.get("name").toString()).run(input, output);
-            result = outputToByteArray1d(output, outputShape);
-        } else if (outputShape.length == 2) {
-            output = new float[outputShape[0]][outputShape[1]];
-            models.get(args.get("name").toString()).run(input, output);
-            result = outputToByteArray2d(output, outputShape);
-        } else if (outputShape.length == 3) {
-            output = new float[outputShape[0]][outputShape[1]][outputShape[2]];
-            models.get(args.get("name").toString()).run(input, output);
-            result = outputToByteArray3d(output, outputShape);
-        } else {
-            output = new float[outputShape[0]][outputShape[1]][outputShape[2]][outputShape[3]];
-            models.get(args.get("name").toString()).run(input, output);
-            result = outputToByteArray4d(output, outputShape);
-        }
+
+        output = new float[outputShape[0]][outputShape[1]][outputShape[2]][outputShape[3]];
+        models.get(args.get("name").toString()).run(input, output);
+        result = outputToByteArray4d(output, outputShape);
 
         return result;
     }
@@ -269,68 +239,6 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
         return result;
     }
 
-    /**
-     * Wandelt ein Double-Array dieses Formates:
-     * [x,y,Farbe]
-     * [0,0,r],[0,0,g],[0,0,b],[1,0,r],....
-     * in ein Float-Array um,
-     * welches als Input für den Tensor benutzt werden kann.
-     * Format: [1][x][y][rgb]
-     *
-     * @param doubles Image als double Werte
-     * @return input für den Tensor
-     */
-    private float[][] getInput2d(double[] doubles, HashMap args, int[] shape) {
-        int length = 1;
-        for (int s : shape) {
-            length *= s;
-        }
-
-        if (length != doubles.length) {
-            return null;
-        }
-
-        float[][] result = new float[shape[0]][shape[1]];
-        int idx = 0;
-        for (int y = 0; y < shape[0]; y++) {
-            for (int x = 0; x < shape[1]; x++) {
-                result[y][x] = (float) doubles[idx++];
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Wandelt ein Double-Array dieses Formates:
-     * [x,y,Farbe]
-     * [0,0,r],[0,0,g],[0,0,b],[1,0,r],....
-     * in ein Float-Array um,
-     * welches als Input für den Tensor benutzt werden kann.
-     * Format: [1][x][y][rgb]
-     *
-     * @param doubles Image als double Werte
-     * @return input für den Tensor
-     */
-    private float[] getInput1d(double[] doubles, HashMap args, int[] shape) {
-        int length = 1;
-        for (int s : shape) {
-            length *= s;
-        }
-
-        if (length != doubles.length) {
-            return null;
-        }
-
-        float[] result = new float[shape[0]];
-        int idx = 0;
-        for (int x = 0; x < shape[0]; x++) {
-            result[x] = (float) doubles[idx++];
-        }
-
-        return result;
-    }
-
 
     /**
      * Wandelt den Output des Tensors wieder in eine Liste zurück,
@@ -339,10 +247,10 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
      * @param outputO Output des Tensors
      * @return Double-Array
      */
-    private byte[] outputToByteArray4d(Object outputO, int[] shape) {
+    private int[] outputToByteArray4d(Object outputO, int[] shape) {
         float[][][][] output = (float[][][][]) outputO;
         double[] resultAsDouble = new double[shape[0] * shape[1] * shape[2] * shape[3]];
-        byte[] result = new byte[resultAsDouble.length];
+        int[] result = new int[resultAsDouble.length];
         int idx = 0;
         for (int a = 0; a < shape[0]; a++) {
             for (int y = 0; y < shape[1]; y++) {
@@ -350,11 +258,11 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
                     for (int c = 0; c < shape[3]; c++) {
                         resultAsDouble[idx] = output[a][y][x][c] * 255;
                         if ((resultAsDouble[idx] > 255)) {
-                            result[idx] = (byte) 255;
+                            result[idx] = 255;
                         } else if (resultAsDouble[idx] < 0) {
                             result[idx] = 0;
                         } else {
-                            result[idx] = (byte) resultAsDouble[idx];
+                            result[idx] = (int) resultAsDouble[idx];
                         }
                         idx++;
                     }

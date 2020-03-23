@@ -27,11 +27,11 @@ class Leosplugin {
   }
 
   ///Als Output gibt es das Bild nach der Prediction
-  static Future<Uint8List> run({
+  static Future<Int32List> run({
     @required String name,
     @required Float64List floats,
   }) async {
-    final Uint8List y =
+    final Int32List y =
         await _channel.invokeMethod('run', {"name": name, "floats": floats});
     return y;
   }
