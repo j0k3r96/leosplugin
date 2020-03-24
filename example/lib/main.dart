@@ -142,6 +142,7 @@ class _MyAppState extends State<MyApp> {
       return im1;
     }
     List<int> x = new List<int>();
+
     x.addAll(im1.getBytes(format: img.Format.rgb));
     x.addAll(im2.getBytes(format: img.Format.rgb));
     var bytes = Uint8List.fromList(x);
