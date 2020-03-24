@@ -256,7 +256,7 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
             for (int y = 0; y < shape[1]; y++) {
                 for (int x = 0; x < shape[2]; x++) {
                     for (int c = 0; c < shape[3]; c++) {
-                        resultAsDouble[idx] = output[a][y][x][c] / 6 * 255; // * 255;
+                        resultAsDouble[idx] = output[a][y][x][c]; // * 255;
                         if ((resultAsDouble[idx] > 255)) {
                             result[idx] = 255;
                         } else if (resultAsDouble[idx] < 0) {
