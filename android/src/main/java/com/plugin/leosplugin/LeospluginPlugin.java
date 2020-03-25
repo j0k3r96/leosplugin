@@ -128,6 +128,8 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
         output = new float[outputShape[0]][outputShape[1]][outputShape[2]][outputShape[3]];
         models.get(args.get("name").toString()).run(input, output);
         result = outputToByteArray4d(output, outputShape);
+        models.get(args.get("name").toString()).resetVariableTensors();
+
 
         return result;
     }

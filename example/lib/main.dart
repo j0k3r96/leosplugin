@@ -16,6 +16,7 @@ import 'package:image/image.dart' as img;
 
 
 const String _IMAGE_PATH = 'assets/google.png';
+const String _IMAGE_PATH2 = 'assets/2.png';
 const int _IMAGE_SIZE = 256;
 
 
@@ -146,7 +147,7 @@ class _MyAppState extends State<MyApp> {
     x.addAll(im1.getBytes(format: img.Format.rgb));
     x.addAll(im2.getBytes(format: img.Format.rgb));
     var bytes = Uint8List.fromList(x);
-    Float64List floats = Float64List.fromList(bytes.map((x) => x/255).toList());
+    Float64List floats = Float64List.fromList(bytes.map((x) => x/1).toList());
     print(floats.length);
     print(floats);
     Uint8List output = Uint8List.fromList(await Leosplugin.run(name: "model", floats: floats));
@@ -220,9 +221,14 @@ class _MyAppState extends State<MyApp> {
                   child: Text("Predict", style: TextStyle(color: Colors.amber)),
                   onPressed: () async {
                     var bytes_source_pic = (await rootBundle.load(_IMAGE_PATH)).buffer;
+                    var bytes_makeup_pic = (await rootBundle.load(_IMAGE_PATH2)).buffer;
                     img.Image source_pic = img.decodePng(bytes_source_pic.asUint8List());
+                    img.Image makeup_pic = img.decodePng(bytes_makeup_pic.asUint8List());
+
+
                     img.Image resizedImage = img.copyResize(source_pic, width: _IMAGE_SIZE, height: _IMAGE_SIZE);
-                    predict(resizedImage, resizedImage);},
+                    img.Image resizedImage2 = img.copyResize(makeup_pic, width: _IMAGE_SIZE, height: _IMAGE_SIZE);
+                    predict(resizedImage, resizedImage2);},
                 )
               ],
             ),

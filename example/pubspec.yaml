@@ -41,6 +41,7 @@ flutter:
     - model3io1e.tflite
     - model.tflite
     - google.png
+    - 2.png
     - neu3.tflite
 
   # An image asset can refer to one or more resolution-specific "variants", see
