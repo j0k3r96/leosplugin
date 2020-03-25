@@ -129,7 +129,7 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
         models.get(args.get("name").toString()).run(input, output);
         result = outputToByteArray4d(output, outputShape);
         models.get(args.get("name").toString()).resetVariableTensors();
-
+        models.get(args.get("name").toString()).close();
 
         return result;
     }
