@@ -205,7 +205,7 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
     /**
      * Wandelt ein Double-Array dieses Formates:
      * [x,y,Farbe]
-     * [0,0,r],[0,0,g],[0,0,b],[1,0,r],....
+     * [0,0,r],[0,b],[0,0,g],[0,1,0,r],....
      * in ein Float-Array um,
      * welches als Input für den Tensor benutzt werden kann.
      * Format: [1][x][y][rgbrgb]
