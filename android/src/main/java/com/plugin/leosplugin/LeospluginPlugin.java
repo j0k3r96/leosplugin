@@ -224,7 +224,7 @@ public class LeospluginPlugin<T> implements MethodCallHandler {
         }
         float[][][][] result = new float[shape[0]][shape[1]][shape[2]][shape[3]];
         int idx = 0;
-        int shapediv2 = shape[3] / 2;
+        int shapediv2 = length / 2;
         for (int y = 0; y < shape[0]; y++) {
             for (int x = 0; x < shape[1]; x++) {
             for (int z = 0; z < shape[2]; z++) {
